@@ -170,10 +170,12 @@ export class FioEngine extends CurrencyEngine<FioTools, SafeFioWalletInfo> {
   // is, we should implement it.
   defaultGetEncryptKey = async (
     fioAddress: string
-  ): Promise<GetEncryptKeyResponse> => {
+  ): Promise<any> => {
     // Provide a default response or handle the fallback logic here
     return {
-      encrypt_public_key: this.walletInfo.keys.publicKey // Use the public key as a fallback
+      encrypt_public_key: this.walletInfo.keys.publicKey, // Use the public key as a fallback
+      hash: null,
+      offline_url: null
     }
   }
 
@@ -238,7 +240,7 @@ export class FioEngine extends CurrencyEngine<FioTools, SafeFioWalletInfo> {
         const obtDecoder = new GetObtData({
           fioPublicKey: this.walletInfo.keys.publicKey,
           getEncryptKey: this.defaultGetEncryptKey,
-          includeEncrypted: false
+          includeEncrypted: true
         })
         const encryptedObtData = await this.fetchEncryptedObtData(
           'getObtData',
@@ -1708,7 +1710,7 @@ export class FioEngine extends CurrencyEngine<FioTools, SafeFioWalletInfo> {
             'record_obt_data_content',
             content,
             fioPrivateKeys.fioKey,
-            payerPublicAddress
+            payeePublicAddress
           )
           txParams = {
             account: 'fio.reqobt',
